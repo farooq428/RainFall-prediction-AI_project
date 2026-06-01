@@ -1,0 +1,62 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Environment / secret files
+.env
+*.env
+
+# Generated ML artifacts
+*.pkl
+*.joblib
+*.h5
+*.pkl
+*.pt
+*.pth
+*.joblib
+*.csv (very large datasets)
+*.zip
+*.exe
+/dataset
+model.pkl
+feature_names.pkl
+scalar.pkl
+rainfall.csv
+
+
+# Optional large or local data files
+# Uncomment if you don't want raw dataset files tracked
+# dataset/rainfall.csv
+# rainfall.csv
+
+# Node modules (if added later)
+node_modules/
+Rainfall Prediction System - Workflow.pdf
+Rainfall Prediction System SVV-Proposal.docx

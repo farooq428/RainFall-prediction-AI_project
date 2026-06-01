@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rainfall AI Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="glass-container">
+        <aside class="sidebar">
+            <div class="logo">Rainfall<span>AI</span></div>
+            <form method="POST" class="search-form">
+                <label>Pakistan City</label>
+                <input list="pak-cities" name="city" placeholder="Search..." value="{{ city }}">
+                <datalist id="pak-cities">
+                    {% for c in cities %}<option value="{{ c }}">{% endfor %}
+                </datalist>
+                <button type="submit">Update View</button>
+            </form>
+            <div class="date-display">{{ today }}</div>
+        </aside>
+
+        <main class="main-content">
+            {% if error %}
+            <div class="error-msg">City data unavailable for "{{ city }}".</div>
+            {% else %}
+            <header><h1>{{ city }}</h1></header>
+
+            <section class="prediction-hero">
+                <div class="value-box">
+                    <span class="val">{{ prediction }}</span><span class="unit">%</span>
+                    <p>Rainfall Probability</p>
+                    <div class="status-badge" style="background:{% if prediction > 70 %}#fee2e2; color:#b91c1c;{% elif prediction > 30 %}#fef3c7; color:#92400e;{% else %}#dcfce7; color:#166534;{% endif %}; padding:5px 15px; border-radius:20px; font-size:12px; font-weight:bold; display:inline-block; margin-top:10px;">
+                        {% if prediction > 70 %}⚠️ HIGH RISK{% elif prediction > 30 %}☁️ MODERATE{% else %}☀️ LOW RISK{% endif %}
+                    </div>
+                </div>
+                <div class="quick-stats">
+                    <div class="stat"><span>TEMP</span><strong>{{ temp }}°C</strong></div>
+                    <div class="stat"><span>HUMIDITY</span><strong>{{ humidity }}%</strong></div>
+                    <div class="stat"><span>WIND</span><strong>{{ wind }} m/s</strong></div>
+                </div>
+            </section>
+
+            <section class="chart-section" style="background:white; padding:20px; border-radius:20px; margin-top:20px;">
+                <h3 style="color:#64748b; font-size:14px; margin-bottom:15px;">5-Day Temperature Trend</h3>
+                <canvas id="mainChart" height="180"></canvas>
+            </section>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        const fData = {{ forecast | tojson if forecast else '[]' }};
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: fData.map(d => new Date(d.day*1000).toLocaleDateString('en-US',{weekday:'short'})),
+                datasets: [{
+                    label: 'Temp (°C)',
+                    data: fData.map(d => d.temp),
+                    borderColor: '#6366f1',
+                    backgroundColor: 'rgba(99,102,241,0.1)',
+                    fill: true, tension: 0.4
+                }]
+            },
+            options: { 
+                plugins: { legend: { display: false } },
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: false } }
+            }
+        });
+    </script>
+</body>
+</html>
